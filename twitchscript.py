@@ -99,7 +99,8 @@ class Twitch:
 
 class Main:
     def __init__(self):    
-        self.choice = -1    
+        self.gchoice = -1
+        self.cchoice = -1    
         self.exit_now = False
         self.state = 'none'
         self.keybingings = {
@@ -156,8 +157,8 @@ class Main:
             print '-' * 40
             if(len(self.games) > 0):                            
                 self.show_content(self.games)            
-                self.choice = self.handle_user_input('Choose a game by number (r to refresh, f to check your favorite channels and q to quit', range(len(self.games) + 1))
-                if self.choice != -1:
+                self.gchoice = self.handle_user_input('Choose a game by number (r to refresh, f to check your favorite channels and q to quit', range(len(self.games) + 1))
+                if self.gchoice != -1:
                     self.state = 'channels'
                     clear_screen()                                                 
                     
@@ -167,21 +168,21 @@ class Main:
             print '-' * 40
             if(len(self.games) > 0):                        
                 self.show_content(self.games)            
-                self.choice = self.handle_user_input('Choose a game by number (r to refresh, f to check your favorite channels and q to quit', range(len(self.games) + 1))
-                if self.choice != -1:
+                self.gchoice = self.handle_user_input('Choose a game by number (r to refresh, f to check your favorite channels and q to quit', range(len(self.games) + 1))
+                if self.gchoice != -1:
                     self.state = 'channels'
                     clear_screen()
         
         if self.state == 'channels':
             clear_screen()            
-            print 'Showing top %d channel for %s:' % (config.getint('settings', 'channel'), self.games[self.choice - 1])
+            print 'Showing top %d channel for %s:' % (config.getint('settings', 'channel'), self.games[self.gchoice - 1])
             print '-' * 40            
-            self.get_channels(self.choice)
+            self.get_channels(self.gchoice)
             if(len(self.channels) > 0):                            
                 self.show_content(self.channels)            
-                self.choice = self.handle_user_input('Choose a channel by number (r to refresh, f to check your favorite channels, g to reload game list and q to quit', range(len(self.channels) + 1))
-                if self.choice != -1:
-                    self.play_stream(self.channels[self.choice - 1])
+                self.cchoice = self.handle_user_input('Choose a channel by number (r to refresh, f to check your favorite channels, g to reload game list and q to quit', range(len(self.channels) + 1))
+                if self.cchoice != -1:
+                    self.play_stream(self.channels[self.cchoice - 1])
                     self.state = 'channels'
                     clear_screen()
        
@@ -266,7 +267,7 @@ class Main:
         self.state = 'channels'
         del self.channels[:]
         try:
-            response = self.twitch.get_channel_for_game(transform_spaces(self.games[self.choice - 1]))
+            response = self.twitch.get_channel_for_game(transform_spaces(self.games[self.gchoice - 1]))
             receivedcount = len(response['streams'])
             
             for i in range(receivedcount):
