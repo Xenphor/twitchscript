@@ -15,6 +15,7 @@ except ImportError:
 
 import ConfigParser
 from optparse import OptionParser, SUPPRESS_HELP
+from livestreamer import Livestreamer, StreamError, PluginError, NoPluginError
 import requests
 import urllib2
 import sys
@@ -118,6 +119,7 @@ class Main:
         self.favs = []
         self.channels = []        
         self.twitch = Twitch(config.get('settings', 'twitchapiurl'), config.get('settings', 'channel'), config.get('settings', 'game'))
+        self.livestreamer = Livestreamer()
         
         try:
             self.run()
@@ -189,12 +191,28 @@ class Main:
        
     def play_stream(self, channel):
         clear_screen()
+        
+        try:
+            plugin = self.livestreamer.resolve_url(("twitch.tv/{0}").format(channel))
+        except Exception as e:
+            print e.message                   
+        
+        try:
+            streams = plugin.get_streams()
+        except PluginError as err:
+            exit("Plugin error: {0}".format(err))
+            
+        quality = config.get('settings', 'quality')
+        if quality not in streams:
+            quality = "best"
+            print "Can't open streams with quality requested ({0}), opening best one".format(config.get('settings', 'quality'))
+                        
         channel = transform_spaces(channel)
         if os.name == 'nt':
-            os.system('livestreamer twitch.tv/%s %s' % (channel, config.get('settings', 'quality')))
+            os.system('livestreamer twitch.tv/%s %s' % (channel, quality))
             #os.system('livestreamer twitch.tv/%s best -p "%s"' % (channel, config.get('settings', 'player')))
         else:
-            os.system('livestreamer twitch.tv/%s %s' % (channel, config.get('settings', 'quality')))
+            os.system('livestreamer twitch.tv/%s %s' % (channel, quality))
             #os.system('livestreamer twitch.tv/%s best -np "%s"' % (channel, config.get('settings', 'player')))
             
     def show_content(self, content):
