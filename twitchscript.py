@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 CONFIGFILE_ERROR = 3
 
@@ -27,6 +27,7 @@ config.set('settings', 'game', '15')
 config.set('settings', 'favorites', '')
 config.set('settings', 'favgames', '')
 config.set('settings', 'player', 'mplayer')
+config.set('settings', 'quality', '720p')
 config.set('settings', 'twitchapiurl', 'https://api.twitch.tv/kraken/')
 
 # Handle request to twitch API
@@ -190,10 +191,10 @@ class Main:
         clear_screen()
         channel = transform_spaces(channel)
         if os.name == 'nt':
-            os.system('livestreamer twitch.tv/%s best' % channel)
+            os.system('livestreamer twitch.tv/%s %s' % (channel, config.get('settings', 'quality')))
             #os.system('livestreamer twitch.tv/%s best -p "%s"' % (channel, config.get('settings', 'player')))
         else:
-            os.system('livestreamer twitch.tv/%s best' % channel)
+            os.system('livestreamer twitch.tv/%s %s' % (channel, config.get('settings', 'quality')))
             #os.system('livestreamer twitch.tv/%s best -np "%s"' % (channel, config.get('settings', 'player')))
             
     def show_content(self, content):
