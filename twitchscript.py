@@ -252,7 +252,7 @@ class Main:
             receivedcount = len(response['streams'])
             
             for i in range(receivedcount):
-                self.favs.append(response['streams'][i]['channel']['name'])
+                self.favs.append('%s playing: %s' % (response['streams'][i]['channel']['name'], response['streams'][i]['game']))
                 
         except Exception as e:
             print 'Error getting favs streams!\n'
