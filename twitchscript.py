@@ -18,6 +18,7 @@ from optparse import OptionParser, SUPPRESS_HELP
 from livestreamer import Livestreamer, StreamError, PluginError, NoPluginError
 import requests
 import urllib2
+import requests
 import sys
 import os
 
@@ -39,7 +40,8 @@ class TwitchApiRequest:
         
     def send_request(self):
         try:
-            self.open_request = urllib2.urlopen(self.method)
+#            self.open_request = 'open'
+	    self.open_request = requests.get(self.method)
         except AttributeError:
             pass
         except urllib2.HTTPError, e:
@@ -57,10 +59,11 @@ class TwitchApiRequest:
         if self.open_request == None:
             return { 'result' : 'no open request'}
         
-        response = self.open_request.read()
+        #response = self.open_request.read()
         
         try:
-            data = json.loads(response)
+            #data = json.loads(response)
+	    data = self.open_request.json()
         except ValueError:
             quit("Cannot parse response: %s\n" % response, JSON_ERROR)
         self.open_request = None
