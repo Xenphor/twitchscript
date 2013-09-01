@@ -204,7 +204,7 @@ class Main:
             
         quality = config.get('settings', 'quality')
         if quality not in streams:
-            quality = "best"
+            quality = "Source"
             print "Can't open streams with quality requested ({0}), opening best one".format(config.get('settings', 'quality'))
                         
         channel = transform_spaces(channel)
