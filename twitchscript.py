@@ -290,7 +290,7 @@ class Main:
             receivedcount = len(response['streams'])
             
             for i in range(receivedcount):
-                self.channels.append(response['streams'][i]['channel']['name'])
+                self.channels.append('%s (%s)' % (response['streams'][i]['channel']['name'], response['streams'][i]['viewers']))
                 
         except Exception as e:
             print 'Error getting games !\n'
